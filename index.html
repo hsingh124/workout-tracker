@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Workout Log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      color-scheme: light;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #f3f4f6;
+      color: #111827;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      padding: 1rem 1rem 2.5rem;
+      background: linear-gradient(to bottom, #f9fafb, #e5e7eb);
+    }
+
+    header {
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #111827;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      border: 1px solid #e5e7eb;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-size: 0.8rem;
+      display: block;
+      margin-bottom: 0.25rem;
+      color: #6b7280;
+    }
+
+    input, button, select {
+      font: inherit;
+    }
+
+    .row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+
+    .row.stack {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    input[type="date"],
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      border-radius: 0.6rem;
+      border: 1px solid #d1d5db;
+      padding: 0.5rem 0.7rem;
+      background: #ffffff;
+      color: #111827;
+    }
+
+    input::placeholder {
+      color: #9ca3af;
+    }
+
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 0.55rem 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.1s ease;
+    }
+
+    button:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    #add-set-btn {
+      background: #22c55e;
+      color: #065f46;
+      box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+      flex-shrink: 0;
+    }
+
+    #add-set-btn:disabled {
+      background: #9ca3af;
+      color: #f9fafb;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    #clear-day-btn {
+      background: #ffffff;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    #log {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 0.3rem;
+    }
+
+    .exercise-block {
+      padding: 0.6rem 0.4rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .exercise-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .exercise-name {
+      color: #111827;
+    }
+
+    .sets-list {
+      font-size: 0.85rem;
+    }
+
+    .set-row-display {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.15rem 0;
+      gap: 0.5rem;
+    }
+
+    .set-meta {
+      opacity: 0.7;
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    .icon-btn {
+      background: #ffffff;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      color: #6b7280;
+    }
+
+    .small-pill {
+      font-size: 0.7rem;
+      border-radius: 999px;
+      padding: 0.1rem 0.5rem;
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: #6b7280;
+      text-align: center;
+      margin-top: 0.25rem;
+    }
+
+    .empty {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-top: 0.7rem;
+    }
+
+    @media (max-width: 480px) {
+      .app {
+        padding-bottom: 1.5rem;
+      }
+      .row.responsive {
+        flex-direction: column;
+      }
+      #add-set-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>Workout Log</header>
+
+    <div class="card">
+      <div class="row stack">
+        <div>
+          <label for="date">Date</label>
+          <input type="date" id="date" />
+        </div>
+
+        <div>
+          <label for="exercise">Exercise</label>
+          <input list="exercise-list" id="exercise" placeholder="e.g. Bench Press" />
+          <datalist id="exercise-list"></datalist>
+        </div>
+
+        <div class="row responsive">
+          <div style="flex:1;">
+            <label for="weight">Weight (kg)</label>
+            <input type="number" id="weight" placeholder="e.g. 40" inputmode="decimal" />
+          </div>
+          <div style="flex:1;">
+            <label for="reps">Reps</label>
+            <input type="number" id="reps" placeholder="e.g. 8" inputmode="numeric" />
+          </div>
+          <div style="align-self:flex-end;">
+            <button id="add-set-btn">Add set</button>
+          </div>
+        </div>
+      </div>
+      <p class="hint">Data is saved only on this device using your browser storage.</p>
+    </div>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:0.3rem;">
+        <div style="font-size:0.9rem;font-weight:600;">Today’s sets</div>
+        <div id="total-sets-pill" class="small-pill" style="display:none;"></div>
+      </div>
+      <div id="log"></div>
+      <div class="empty" id="empty-msg">No sets logged yet. Add your first set above.</div>
+      <button id="clear-day-btn">Clear this day</button>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "simpleWorkoutLog_v1";
+    const EXERCISE_KEY = "simpleWorkoutExercises_v1";
+
+    const DEFAULT_EXERCISES = [
+      "Bench Press",
+      "Incline DB Press",
+      "Overhead Press",
+      "Lat Pulldown",
+      "Row",
+      "Squat",
+      "Leg Press",
+      "Deadlift",
+      "Bicep Curl",
+      "Tricep Pushdown",
+      "Lateral Raise",
+      "Calf Raise"
+    ];
+
+    const dateInput = document.getElementById("date");
+    const exerciseInput = document.getElementById("exercise");
+    const weightInput = document.getElementById("weight");
+    const repsInput = document.getElementById("reps");
+    const addSetBtn = document.getElementById("add-set-btn");
+    const clearDayBtn = document.getElementById("clear-day-btn");
+    const logEl = document.getElementById("log");
+    const emptyMsgEl = document.getElementById("empty-msg");
+    const totalSetsPill = document.getElementById("total-sets-pill");
+
+    // ---- Storage helpers ----
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        console.error("Failed to parse storage", e);
+        return {};
+      }
+    }
+
+    function saveData(data) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadExercises() {
+      try {
+        const raw = localStorage.getItem(EXERCISE_KEY);
+        if (raw) {
+          return JSON.parse(raw);
+        }
+        // If none saved yet, seed with defaults
+        return DEFAULT_EXERCISES.slice();
+      } catch {
+        return DEFAULT_EXERCISES.slice();
+      }
+    }
+
+    function saveExercises(arr) {
+      localStorage.setItem(EXERCISE_KEY, JSON.stringify(arr));
+    }
+
+    function refreshExerciseDropdown() {
+      const list = loadExercises();
+      const datalist = document.getElementById("exercise-list");
+      datalist.innerHTML = "";
+      list
+        .slice()
+        .sort((a, b) => a.localeCompare(b))
+        .forEach((item) => {
+          const opt = document.createElement("option");
+          opt.value = item;
+          datalist.appendChild(opt);
+        });
+    }
+
+    function addExerciseToList(exName) {
+      if (!exName) return;
+      const trimmed = exName.trim();
+      if (!trimmed) return;
+
+      const list = loadExercises();
+      if (!list.includes(trimmed)) {
+        list.push(trimmed);
+        saveExercises(list);
+        refreshExerciseDropdown();
+      }
+    }
+
+    // ---- Date & time helpers ----
+    function todayISO() {
+      const now = new Date();
+      const offsetMs = now.getTimezoneOffset() * 60000;
+      const local = new Date(now.getTime() - offsetMs);
+      return local.toISOString().slice(0, 10);
+    }
+
+    function formatTime(d) {
+      const h = d.getHours().toString().padStart(2, "0");
+      const m = d.getMinutes().toString().padStart(2, "0");
+      return `${h}:${m}`;
+    }
+
+    function getCurrentDateKey() {
+      return dateInput.value || todayISO();
+    }
+
+    // ---- Rendering ----
+    function render() {
+      const data = loadData();
+      const dateKey = getCurrentDateKey();
+      const entries = data[dateKey] || [];
+
+      logEl.innerHTML = "";
+
+      if (!entries.length) {
+        emptyMsgEl.style.display = "block";
+        totalSetsPill.style.display = "none";
+        return;
+      }
+
+      emptyMsgEl.style.display = "none";
+
+      const grouped = {};
+      entries.forEach((entry, idx) => {
+        const key = entry.exercise || "Unknown";
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push({ ...entry, idx });
+      });
+
+      const totalSets = entries.length;
+      totalSetsPill.textContent = `${totalSets} set${totalSets === 1 ? "" : "s"}`;
+      totalSetsPill.style.display = "inline-block";
+
+      Object.keys(grouped)
+        .sort((a, b) => a.localeCompare(b))
+        .forEach((exerciseName) => {
+          const block = document.createElement("div");
+          block.className = "exercise-block";
+
+          const header = document.createElement("div");
+          header.className = "exercise-header";
+
+          const nameSpan = document.createElement("span");
+          nameSpan.className = "exercise-name";
+          nameSpan.textContent = exerciseName;
+
+          const countSpan = document.createElement("span");
+          countSpan.className = "small-pill";
+          countSpan.textContent = `${grouped[exerciseName].length} set${
+            grouped[exerciseName].length === 1 ? "" : "s"
+          }`;
+
+          header.appendChild(nameSpan);
+          header.appendChild(countSpan);
+          block.appendChild(header);
+
+          const list = document.createElement("div");
+          list.className = "sets-list";
+
+          grouped[exerciseName].forEach((entry) => {
+            const row = document.createElement("div");
+            row.className = "set-row-display";
+
+            const text = document.createElement("span");
+            text.textContent = `${entry.weight || "-"} kg × ${entry.reps || "-"} reps`;
+
+            const meta = document.createElement("span");
+            meta.className = "set-meta";
+            meta.textContent = entry.time || "";
+
+            const left = document.createElement("div");
+            left.appendChild(text);
+            if (meta.textContent) {
+              left.appendChild(document.createElement("br"));
+              left.appendChild(meta);
+            }
+
+            const del = document.createElement("button");
+            del.className = "icon-btn";
+            del.textContent = "✕";
+            del.addEventListener("click", () => deleteSet(entry.idx));
+
+            row.appendChild(left);
+            row.appendChild(del);
+            list.appendChild(row);
+          });
+
+          block.appendChild(list);
+          logEl.appendChild(block);
+        });
+    }
+
+    // ---- Actions ----
+    function addSet() {
+      const exercise = exerciseInput.value.trim();
+      const weight = weightInput.value.trim();
+      const reps = repsInput.value.trim();
+
+      if (!exercise || !reps) {
+        alert("Please enter at least an exercise and reps.");
+        return;
+      }
+
+      // Remember this exercise in the dropdown list
+      addExerciseToList(exercise);
+
+      const dateKey = getCurrentDateKey();
+      const data = loadData();
+      if (!data[dateKey]) data[dateKey] = [];
+
+      const now = new Date();
+      data[dateKey].push({
+        exercise,
+        weight: weight || null,
+        reps: reps || null,
+        time: formatTime(now),
+      });
+
+      saveData(data);
+
+      weightInput.value = "";
+      repsInput.value = "";
+      repsInput.focus();
+
+      render();
+    }
+
+    function deleteSet(globalIndex) {
+      const data = loadData();
+      const dateKey = getCurrentDateKey();
+      const entries = data[dateKey] || [];
+      if (globalIndex < 0 || globalIndex >= entries.length) return;
+      entries.splice(globalIndex, 1);
+      data[dateKey] = entries;
+      saveData(data);
+      render();
+    }
+
+    function clearDay() {
+      const dateKey = getCurrentDateKey();
+      if (!confirm(`Clear all sets for ${dateKey}?`)) return;
+      const data = loadData();
+      delete data[dateKey];
+      saveData(data);
+      render();
+    }
+
+    // ---- Event listeners ----
+    addSetBtn.addEventListener("click", addSet);
+    clearDayBtn.addEventListener("click", clearDay);
+    dateInput.addEventListener("change", render);
+
+    repsInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addSet();
+    });
+    weightInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") repsInput.focus();
+    });
+    exerciseInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") weightInput.focus();
+    });
+
+    // ---- Init ----
+    function init() {
+      dateInput.value = todayISO();
+      refreshExerciseDropdown();
+      render();
+    }
+
+    init();
+  </script>
+</body>
+</html>
