@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <title>Modern Workout Log</title>
@@ -8,18 +8,37 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <style>
     :root {
-      --primary: #2563eb; /* Modern Blue */
+      /* Light Theme (Default) */
+      --primary: #2563eb;
       --primary-soft: #dbeafe;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text-main: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
+      --input-bg: #f1f5f9;
       --danger: #ef4444;
-      --success: #22c55e;
+      --danger-bg: #fee2e2;
       --radius: 16px;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
       --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --nav-bg: rgba(255, 255, 255, 0.95);
+    }
+
+    [data-theme="dark"] {
+      /* Dark Theme */
+      --primary: #3b82f6;
+      --primary-soft: #1e3a8a;
+      --bg: #111827;
+      --card-bg: #1f2937;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border: #374151;
+      --input-bg: #374151;
+      --danger: #f87171;
+      --danger-bg: #450a0a;
+      --nav-bg: rgba(31, 41, 55, 0.95);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     }
 
     * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -30,20 +49,24 @@
       font-family: var(--font-main);
       color: var(--text-main);
       font-size: 16px;
-      padding-bottom: 90px; /* Space for bottom nav */
+      padding-bottom: 90px;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    /* --- Layout & Typography --- */
     .container {
       max-width: 600px;
       margin: 0 auto;
       padding: 1.5rem 1rem;
     }
 
+    /* --- Typography & Header --- */
+    header { margin-bottom: 1.5rem; }
+    
     h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -0.025em; }
-    h1 { font-size: 1.75rem; margin-bottom: 1.5rem; }
+    h1 { font-size: 1.75rem; }
     h2 { font-size: 1.25rem; margin-bottom: 1rem; }
 
+    /* --- Cards --- */
     .card {
       background: var(--card-bg);
       border-radius: var(--radius);
@@ -51,6 +74,7 @@
       box-shadow: var(--shadow);
       margin-bottom: 1.25rem;
       border: 1px solid var(--border);
+      transition: background 0.3s ease, border-color 0.3s ease;
     }
 
     .row { display: flex; align-items: center; gap: 0.75rem; }
@@ -69,13 +93,13 @@
       padding: 0.85rem;
       border-radius: 12px;
       border: 1px solid var(--border);
-      background: #f9f9f9;
+      background: var(--input-bg);
       font-size: 1rem;
       color: var(--text-main);
       transition: all 0.2s;
+      color-scheme: light dark; /* Keeps date picker icon visible in dark mode */
     }
     input:focus {
-      background: #fff;
       border-color: var(--primary);
       box-shadow: 0 0 0 3px var(--primary-soft);
     }
@@ -88,7 +112,7 @@
       font-size: 0.95rem;
       border-radius: 12px;
       padding: 0.85rem 1.5rem;
-      transition: transform 0.1s;
+      transition: transform 0.1s, background 0.2s;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -97,10 +121,18 @@
 
     .btn-primary { background: var(--primary); color: white; width: 100%; }
     .btn-ghost { background: transparent; color: var(--text-muted); padding: 0.5rem; }
-    .btn-danger { background: #fee2e2; color: var(--danger); width: 100%; }
-    .btn-small { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+    .btn-danger { background: var(--danger-bg); color: var(--danger); width: 100%; border: 1px solid var(--danger); }
+    
+    .btn-icon {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.6rem;
+      border-radius: 50%;
+      box-shadow: var(--shadow);
+    }
 
-    /* --- Log List (Chronological) --- */
+    /* --- Log List --- */
     .log-item {
       display: flex;
       justify-content: space-between;
@@ -110,98 +142,68 @@
     }
     .log-item:last-child { border-bottom: none; }
     
-    .log-info h4 { margin: 0 0 0.2rem 0; font-size: 1rem; }
+    .log-info h4 { margin: 0 0 0.2rem 0; font-size: 1rem; color: var(--text-main); }
     .log-details { font-size: 0.9rem; color: var(--text-muted); display: flex; gap: 8px; align-items: center; }
     
-    .pill {
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 99px;
-      font-weight: 600;
-    }
-    .pill-drop { background: #fef3c7; color: #d97706; }
+    .pill { font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+    .pill-drop { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
     .pill-time { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
 
-    /* --- Tabs / Views --- */
+    /* --- Tabs --- */
     .view { display: none; animation: fadein 0.2s; }
     .view.active { display: block; }
-
     @keyframes fadein { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* --- Navigation Bar --- */
+    /* --- Navigation --- */
     .nav-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(255, 255, 255, 0.95);
+      bottom: 0; left: 0; right: 0;
+      background: var(--nav-bg);
       backdrop-filter: blur(10px);
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-around;
-      padding: 0.5rem 0 1.5rem 0; /* Extra padding for iPhone home bar */
+      padding: 0.5rem 0 1.5rem 0;
       z-index: 100;
+      transition: background 0.3s ease;
     }
     .nav-item {
-      flex: 1;
-      text-align: center;
-      padding: 0.5rem;
+      flex: 1; text-align: center; padding: 0.5rem;
       color: var(--text-muted);
-      font-size: 0.75rem;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
+      font-size: 0.75rem; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
     }
     .nav-item.active { color: var(--primary); font-weight: 600; }
     .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
 
     /* --- Rest Timer --- */
     #rest-timer-float {
-      position: fixed;
-      bottom: 110px; /* Above nav */
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--text-main);
-      color: white;
-      padding: 0.6rem 1.2rem;
-      border-radius: 99px;
-      font-feature-settings: "tnum";
-      font-variant-numeric: tabular-nums;
-      font-weight: 600;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      display: none;
-      z-index: 99;
-      align-items: center;
-      gap: 8px;
+      position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%);
+      background: var(--text-main); color: var(--card-bg);
+      padding: 0.6rem 1.2rem; border-radius: 99px;
+      font-variant-numeric: tabular-nums; font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      display: none; z-index: 99; align-items: center; gap: 8px;
     }
     #rest-timer-float.active { display: flex; }
     .stop-timer {
-        background: rgba(255,255,255,0.2);
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        cursor: pointer;
+        background: rgba(128,128,128,0.3); border-radius: 50%;
+        width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
+        font-size: 12px; cursor: pointer;
     }
 
     /* --- Records Page --- */
     .record-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem;
-      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .record-item:last-child {
+      border-bottom: none;
     }
     .record-val { text-align: right; }
     .big-num { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
     .sub-text { font-size: 0.8rem; color: var(--text-muted); }
 
-    /* --- Empty State --- */
     .empty-state { text-align: center; padding: 2rem 1rem; color: var(--text-muted); }
   </style>
 </head>
@@ -214,9 +216,12 @@
   </div>
 
   <div id="view-tracker" class="view active container">
-    <header class="row sb">
-      <h1>Workout Log</h1>
-      <input type="date" id="date-picker" style="width: auto; padding: 0.5rem;" />
+    <header>
+      <div class="row sb" style="margin-bottom: 0.8rem;">
+        <h1>Workout Log</h1>
+        <button id="theme-toggle" class="btn-icon">🌙</button>
+      </div>
+      <input type="date" id="date-picker" />
     </header>
 
     <div class="card">
@@ -247,7 +252,7 @@
     </div>
 
     <div class="card" style="padding: 0; overflow: hidden;">
-      <div style="padding: 1rem; background: #f1f5f9; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">
+      <div style="padding: 1rem; background: var(--bg); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">
         Today's Session
       </div>
       <div id="daily-log" style="padding: 0 1rem;">
@@ -260,7 +265,7 @@
 
   <div id="view-records" class="view container">
     <h1>Personal Records</h1>
-    <div class="card">
+    <div class="card" style="margin-top: 1.5rem;">
       <input type="text" id="search-records" placeholder="Search exercises..." />
     </div>
     <div class="card" style="padding: 0;">
@@ -271,7 +276,7 @@
   <div id="view-settings" class="view container">
     <h1>Data & Settings</h1>
     
-    <div class="card">
+    <div class="card" style="margin-top: 1.5rem;">
       <h2>Export Data</h2>
       <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">
         Download all your workout history as a CSV file.
@@ -282,10 +287,10 @@
     <div class="card">
       <h2>Import Data</h2>
       <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">
-        Import a CSV file. Ensure the format matches the export format (Date, Exercise, Weight, Reps, ...).
+        Import a CSV file. Ensure the format matches the export format.
       </p>
       <input type="file" id="import-file" accept=".csv" style="margin-bottom: 1rem;" />
-      <button id="import-btn" class="btn-primary" style="background: var(--text-main);">Import CSV</button>
+      <button id="import-btn" class="btn-primary" style="background: var(--text-main); color: var(--card-bg);">Import CSV</button>
     </div>
   </div>
 
@@ -308,10 +313,11 @@
     // --- CONFIG & STATE ---
     const STORAGE_KEY = "simpleWorkoutLog_v1";
     const EXERCISE_KEY = "simpleWorkoutExercises_v1";
-    const DEFAULT_EXERCISES = ["Bench Press", "Squat", "Deadlift", "Overhead Press", "Pull Up", "Dumbbell Curl", "Tricep Extension"];
+    const THEME_KEY = "simpleWorkoutTheme";
     
     let restInterval;
     let restStartTime = null;
+    const DEFAULT_EXERCISES = ["Bench Press", "Squat", "Deadlift", "Overhead Press", "Pull Up", "Dumbbell Curl", "Tricep Extension"];
 
     // --- DOM ELEMENTS ---
     const datePicker = document.getElementById('date-picker');
@@ -322,31 +328,38 @@
     const logContainer = document.getElementById('daily-log');
     const emptyMsg = document.getElementById('empty-msg');
     const exerciseDatalist = document.getElementById('exercise-list');
-    
+    const themeToggle = document.getElementById('theme-toggle');
+
     // --- INITIALIZATION ---
     function init() {
+      // Load Theme
+      const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+      setTheme(savedTheme);
+
+      // Load Data
       datePicker.value = new Date().toISOString().split('T')[0];
       loadExercises();
       renderLog();
-      renderRecords(); // Pre-load records
+      renderRecords();
     }
+
+    // --- THEME HANDLING ---
+    function setTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem(THEME_KEY, themeName);
+      themeToggle.textContent = themeName === 'dark' ? '☀️' : '🌙';
+    }
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    });
 
     // --- DATA HANDLING ---
-    function getData() {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-    }
-
-    function saveData(data) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
-
-    function getExercises() {
-      return JSON.parse(localStorage.getItem(EXERCISE_KEY) || JSON.stringify(DEFAULT_EXERCISES));
-    }
-
-    function saveExercises(list) {
-      localStorage.setItem(EXERCISE_KEY, JSON.stringify(list));
-    }
+    function getData() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
+    function saveData(data) { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+    function getExercises() { return JSON.parse(localStorage.getItem(EXERCISE_KEY) || JSON.stringify(DEFAULT_EXERCISES)); }
+    function saveExercises(list) { localStorage.setItem(EXERCISE_KEY, JSON.stringify(list)); }
 
     // --- CORE: ADD SET ---
     document.getElementById('add-btn').addEventListener('click', () => {
@@ -356,12 +369,9 @@
       const reps = repsInput.value;
       const isDrop = dropsetCheck.checked;
 
-      if (!exercise || !reps) {
-        alert("Please enter exercise and reps");
-        return;
-      }
+      if (!exercise || !reps) { alert("Please enter exercise and reps"); return; }
 
-      // Save Exercise to list if new
+      // Update Exercise List
       const exList = getExercises();
       if (!exList.includes(exercise)) {
         exList.push(exercise);
@@ -376,34 +386,22 @@
       const now = new Date();
       const timeString = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
 
-      // Add new set
       data[date].push({
-        exercise,
-        weight,
-        reps,
-        isDropSet: isDrop,
-        time: timeString,
-        timestamp: Date.now() // Added for better sorting potential later
+        exercise, weight, reps, isDropSet: isDrop, time: timeString, timestamp: Date.now()
       });
 
       saveData(data);
-      
-      // UI Updates
       renderLog();
-      renderRecords(); // Update PRs immediately
-      
-      // Start Rest Timer
+      renderRecords();
       startRestTimer();
 
-      // Reset inputs (keep exercise, clear numbers)
       weightInput.value = "";
       repsInput.value = "";
       dropsetCheck.checked = false;
       repsInput.focus();
     });
 
-    // --- RENDER: DAILY LOG ---
-    // Request: Sort by order logged (Time), not by String
+    // --- RENDER LOG ---
     function renderLog() {
       const date = datePicker.value;
       const data = getData();
@@ -418,7 +416,6 @@
         emptyMsg.style.display = 'none';
         document.getElementById('clear-day-btn').style.display = 'block';
         
-        // Render chronologically (as stored in array)
         sets.forEach((set, index) => {
           const item = document.createElement('div');
           item.className = 'log-item';
@@ -464,7 +461,7 @@
 
     datePicker.addEventListener('change', renderLog);
 
-    // --- EXERCISE DROPDOWN ---
+    // --- HELPERS ---
     function loadExercises() {
       const list = getExercises();
       exerciseDatalist.innerHTML = '';
@@ -475,27 +472,21 @@
       });
     }
 
-    // --- RECORDS PAGE ---
+    // --- RECORDS ---
     function renderRecords() {
       const query = document.getElementById('search-records').value.toLowerCase();
       const data = getData();
-      const stats = {}; // { ExerciseName: { maxWeight: 0, repsAtMax: 0 } }
+      const stats = {}; 
 
-      // aggregation
       Object.keys(data).forEach(dateKey => {
         data[dateKey].forEach(set => {
           const exName = set.exercise;
           const weight = parseFloat(set.weight) || 0;
           const reps = parseInt(set.reps) || 0;
-
-          if (!stats[exName]) {
-            stats[exName] = { maxWeight: 0, reps: 0 };
-          }
-
+          if (!stats[exName]) stats[exName] = { maxWeight: 0, reps: 0 };
           if (weight > stats[exName].maxWeight) {
             stats[exName] = { maxWeight: weight, reps: reps };
           } else if (weight === stats[exName].maxWeight && reps > stats[exName].reps) {
-            // Tie-breaker: if weight is same, higher reps wins
             stats[exName].reps = reps;
           }
         });
@@ -503,7 +494,6 @@
 
       const listContainer = document.getElementById('records-list');
       listContainer.innerHTML = '';
-
       const sortedNames = Object.keys(stats).sort();
       let hasResults = false;
 
@@ -524,23 +514,17 @@
         }
       });
 
-      if (!hasResults) {
-        listContainer.innerHTML = '<div class="empty-state">No records found.</div>';
-      }
+      if (!hasResults) listContainer.innerHTML = '<div class="empty-state">No records found.</div>';
     }
-
     document.getElementById('search-records').addEventListener('input', renderRecords);
 
-    // --- REST TIMER ---
+    // --- TIMER ---
     function startRestTimer() {
       restStartTime = Date.now();
       const timerEl = document.getElementById('rest-timer-float');
       const display = document.getElementById('timer-display');
-      
       timerEl.classList.add('active');
-      
       if(restInterval) clearInterval(restInterval);
-      
       restInterval = setInterval(() => {
         const diff = Math.floor((Date.now() - restStartTime) / 1000);
         const m = Math.floor(diff / 60).toString().padStart(2,'0');
@@ -548,78 +532,52 @@
         display.textContent = `${m}:${s}`;
       }, 1000);
     }
-
     document.getElementById('stop-timer-btn').addEventListener('click', () => {
       clearInterval(restInterval);
       document.getElementById('rest-timer-float').classList.remove('active');
     });
 
-    // --- IMPORT / EXPORT ---
+    // --- IMPORT/EXPORT ---
     document.getElementById('export-btn').addEventListener('click', () => {
       const data = getData();
       let csv = "Date,Exercise,Weight,Reps,Time,IsDropSet\n";
-      
-      // Sort dates for export cleanliness
-      const dates = Object.keys(data).sort();
-      dates.forEach(d => {
+      Object.keys(data).sort().forEach(d => {
         data[d].forEach(set => {
-          // escape commas in exercise names
           const safeEx = set.exercise.includes(',') ? `"${set.exercise}"` : set.exercise;
           csv += `${d},${safeEx},${set.weight},${set.reps},${set.time},${set.isDropSet}\n`;
         });
       });
-
       const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
+      a.href = window.URL.createObjectURL(blob);
       a.download = `workout_data_${new Date().toISOString().slice(0,10)}.csv`;
       a.click();
     });
 
     document.getElementById('import-btn').addEventListener('click', () => {
-      const fileInput = document.getElementById('import-file');
-      const file = fileInput.files[0];
+      const file = document.getElementById('import-file').files[0];
       if (!file) return alert("Please select a CSV file.");
-
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          const text = e.target.result;
-          const lines = text.split('\n');
-          const data = getData(); // Load current to merge, or {} to overwrite
+          const lines = e.target.result.split('\n');
+          const data = getData();
           let count = 0;
-
-          // Skip header (index 0)
           for (let i = 1; i < lines.length; i++) {
             const line = lines[i].trim();
             if (!line) continue;
-            
-            // Basic CSV parse (assumes simple structure from export)
-            const parts = line.split(','); 
-            // Handle potential quoted exercise names roughly
-            // For robust usage, a real CSV parser library is better, but this works for our Export format
+            const parts = line.split(',');
             if(parts.length < 4) continue;
-
             const date = parts[0];
             const exercise = parts[1].replace(/"/g, '');
-            const weight = parts[2];
-            const reps = parts[3];
-            const time = parts[4] || "00:00";
-            const isDropSet = parts[5] === 'true';
-
             if (!data[date]) data[date] = [];
-            data[date].push({ exercise, weight, reps, time, isDropSet });
+            data[date].push({ exercise, weight: parts[2], reps: parts[3], time: parts[4]||"00:00", isDropSet: parts[5]==='true' });
             count++;
           }
-
           saveData(data);
-          alert(`Successfully imported ${count} sets.`);
-          init(); // reload UI
-        } catch (err) {
-          console.error(err);
-          alert("Error parsing CSV. Ensure format is correct.");
-        }
+          alert(`Imported ${count} sets.`);
+          init();
+        } catch (err) { alert("Error parsing CSV."); }
       };
       reader.readAsText(file);
     });
@@ -628,10 +586,8 @@
     window.switchView = function(viewName, navEl) {
       document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
       document.getElementById(`view-${viewName}`).classList.add('active');
-      
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
       navEl.classList.add('active');
-
       if (viewName === 'records') renderRecords();
     }
 
