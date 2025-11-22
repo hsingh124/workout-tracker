@@ -5,7 +5,8 @@
   <title>Modern Workout Log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#f8fafc" />
   <style>
     :root {
       /* Light Theme (Default) */
@@ -23,6 +24,7 @@
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
       --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --nav-bg: rgba(255, 255, 255, 0.95);
+      --scheme: light;
     }
 
     [data-theme="dark"] {
@@ -39,6 +41,7 @@
       --danger-bg: #450a0a;
       --nav-bg: rgba(31, 41, 55, 0.95);
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      --scheme: dark;
     }
 
     * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
@@ -97,7 +100,7 @@
       font-size: 1rem;
       color: var(--text-main);
       transition: all 0.2s;
-      color-scheme: light dark; /* Keeps date picker icon visible in dark mode */
+      color-scheme: var(--scheme);
     }
     input:focus {
       border-color: var(--primary);
@@ -205,6 +208,12 @@
     .sub-text { font-size: 0.8rem; color: var(--text-muted); }
 
     .empty-state { text-align: center; padding: 2rem 1rem; color: var(--text-muted); }
+
+    /* --- Checkboxes --- */
+    input[type="checkbox"] {
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -348,6 +357,10 @@
       document.documentElement.setAttribute('data-theme', themeName);
       localStorage.setItem(THEME_KEY, themeName);
       themeToggle.textContent = themeName === 'dark' ? '☀️' : '🌙';
+      
+      // Update the iPhone Status Bar Color
+      const color = themeName === 'dark' ? '#111827' : '#f8fafc'; // Matches your CSS --bg variable
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
     }
 
     themeToggle.addEventListener('click', () => {
