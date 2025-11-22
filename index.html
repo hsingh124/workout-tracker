@@ -214,6 +214,18 @@
       accent-color: var(--primary);
       cursor: pointer;
     }
+
+    /* Fix for iOS Date Picker width */
+    #date-picker {
+      width: fit-content;      /* Only as wide as the text */
+      min-width: 150px;        /* Prevents it from being too small */
+      display: block;          /* Allows centering */
+      margin: 0 auto;          /* Centers it */
+      text-align: center;      /* Centers text inside */
+      appearance: none;        /* Removes default iOS styling if you prefer the white box look */
+      -webkit-appearance: none;
+      background: var(--input-bg); /* Ensures it matches your theme */
+    }
   </style>
 </head>
 <body>
