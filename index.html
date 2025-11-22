@@ -215,6 +215,26 @@
       cursor: pointer;
     }
 
+    /* Fix for iOS Date Picker width */
+    #date-picker {
+      width: 100%;              /* Fill the available space */
+      display: block;
+      margin: 0;
+      
+      /* CRITICAL: This forces iOS to render it as a flat box 
+         (matching your other inputs) instead of the default bubble */
+      appearance: none;
+      -webkit-appearance: none;
+      
+      /* Safety against overflow */
+      box-sizing: border-box;
+      max-width: 100%;
+      
+      /* Theme consistency */
+      background: var(--input-bg);
+      color: var(--text-main);
+      font-family: inherit;
+    }
   </style>
 </head>
 <body>
