@@ -2,587 +2,637 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Workout Log</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Modern Workout Log</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <style>
     :root {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 16px;
-      color-scheme: light;
+      --primary: #2563eb; /* Modern Blue */
+      --primary-soft: #dbeafe;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --radius: 16px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+    
     body {
       margin: 0;
-      background: #f3f4f6;
-      color: #111827;
-      display: flex;
-      justify-content: center;
+      background: var(--bg);
+      font-family: var(--font-main);
+      color: var(--text-main);
+      font-size: 16px;
+      padding-bottom: 90px; /* Space for bottom nav */
     }
 
-    .app {
-      width: 100%;
-      max-width: 480px;
-      min-height: 100vh;
-      padding: 1rem 1rem 2.5rem;
-      background: linear-gradient(to bottom, #f9fafb, #e5e7eb);
+    /* --- Layout & Typography --- */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
     }
 
-    header {
-      font-size: 1.4rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 1rem;
-      color: #111827;
-    }
+    h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -0.025em; }
+    h1 { font-size: 1.75rem; margin-bottom: 1.5rem; }
+    h2 { font-size: 1.25rem; margin-bottom: 1rem; }
 
     .card {
-      background: #ffffff;
-      border-radius: 1rem;
-      padding: 1rem;
-      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
-      border: 1px solid #e5e7eb;
-      margin-bottom: 1rem;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.25rem;
+      border: 1px solid var(--border);
     }
 
+    .row { display: flex; align-items: center; gap: 0.75rem; }
+    .col { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+    .sb { justify-content: space-between; }
+
+    /* --- Forms --- */
     label {
-      font-size: 0.8rem;
-      display: block;
-      margin-bottom: 0.25rem;
-      color: #6b7280;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
     }
 
-    input, button, select {
-      font: inherit;
-    }
-
-    .row {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-      align-items: center;
-    }
-
-    .row.stack {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    select {
+    input, select {
       width: 100%;
-      border-radius: 0.6rem;
-      border: 1px solid #d1d5db;
-      padding: 0.5rem 0.7rem;
-      background: #ffffff;
-      color: #111827;
+      padding: 0.85rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #f9f9f9;
+      font-size: 1rem;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+    input:focus {
+      background: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
     }
 
-    input[type="date"] {
-        display: block;
-        width: calc(100% - 24px);
-        margin: 0.25rem auto;
-        padding: 0.6rem 0.9rem;
-        line-height: 2.0em;
-        border-radius: 0.8rem;
-        border: 1px solid #d1d5db;
-        background: #fff;
-        color: #111827;
-        font: inherit;
-    }
-
-    input::placeholder {
-      color: #9ca3af;
-    }
-
+    /* --- Buttons --- */
     button {
-      border-radius: 999px;
-      border: none;
-      padding: 0.55rem 0.9rem;
-      font-weight: 600;
       cursor: pointer;
-      white-space: nowrap;
-      transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.1s ease;
+      border: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 12px;
+      padding: 0.85rem 1.5rem;
+      transition: transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
+    button:active { transform: scale(0.98); }
 
-    button:active {
-      transform: translateY(1px);
-      box-shadow: none;
-    }
+    .btn-primary { background: var(--primary); color: white; width: 100%; }
+    .btn-ghost { background: transparent; color: var(--text-muted); padding: 0.5rem; }
+    .btn-danger { background: #fee2e2; color: var(--danger); width: 100%; }
+    .btn-small { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
 
-    #add-set-btn {
-      background: #22c55e;
-      color: #065f46;
-      box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
-      flex-shrink: 0;
-    }
-
-    #add-set-btn:disabled {
-      background: #9ca3af;
-      color: #f9fafb;
-      box-shadow: none;
-      cursor: default;
-    }
-
-    #clear-day-btn {
-      background: #ffffff;
-      color: #b91c1c;
-      border: 1px solid #fecaca;
-      width: 100%;
-      margin-top: 0.5rem;
-    }
-
-    #log {
-      max-height: 60vh;
-      overflow-y: auto;
-      padding-right: 0.3rem;
-    }
-
-    .exercise-block {
-      padding: 0.6rem 0.4rem;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .exercise-header {
+    /* --- Log List (Chronological) --- */
+    .log-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.25rem;
-      font-size: 0.9rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .log-item:last-child { border-bottom: none; }
+    
+    .log-info h4 { margin: 0 0 0.2rem 0; font-size: 1rem; }
+    .log-details { font-size: 0.9rem; color: var(--text-muted); display: flex; gap: 8px; align-items: center; }
+    
+    .pill {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 99px;
       font-weight: 600;
     }
+    .pill-drop { background: #fef3c7; color: #d97706; }
+    .pill-time { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
 
-    .exercise-name {
-      color: #111827;
+    /* --- Tabs / Views --- */
+    .view { display: none; animation: fadein 0.2s; }
+    .view.active { display: block; }
+
+    @keyframes fadein { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- Navigation Bar --- */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem 0 1.5rem 0; /* Extra padding for iPhone home bar */
+      z-index: 100;
+    }
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      padding: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav-item.active { color: var(--primary); font-weight: 600; }
+    .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
+
+    /* --- Rest Timer --- */
+    #rest-timer-float {
+      position: fixed;
+      bottom: 110px; /* Above nav */
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-main);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 99px;
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 99;
+      align-items: center;
+      gap: 8px;
+    }
+    #rest-timer-float.active { display: flex; }
+    .stop-timer {
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        cursor: pointer;
     }
 
-    .sets-list {
-      font-size: 0.85rem;
-    }
-
-    .set-row-display {
+    /* --- Records Page --- */
+    .record-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.15rem 0;
-      gap: 0.5rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
     }
+    .record-val { text-align: right; }
+    .big-num { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+    .sub-text { font-size: 0.8rem; color: var(--text-muted); }
 
-    .set-meta {
-      opacity: 0.7;
-      font-size: 0.75rem;
-      color: #6b7280;
-    }
-
-    .icon-btn {
-      background: #ffffff;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      font-size: 0.7rem;
-      padding: 0.15rem 0.4rem;
-      color: #6b7280;
-    }
-
-    .small-pill {
-      font-size: 0.7rem;
-      border-radius: 999px;
-      padding: 0.1rem 0.5rem;
-      background: #e0f2fe;
-      color: #0369a1;
-    }
-
-    .drop-set-row {
-      margin-left: 1rem;
-      padding-left: 0.5rem;
-      border-left: 2px solid #fbbf24;
-      opacity: 0.9;
-    }
-
-    .drop-set-label {
-      font-size: 0.7rem;
-      color: #f59e0b;
-      font-weight: 600;
-      margin-right: 0.5rem;
-    }
-
-    .hint {
-      font-size: 0.75rem;
-      color: #6b7280;
-      text-align: center;
-      margin-top: 0.25rem;
-    }
-
-    .empty {
-      text-align: center;
-      font-size: 0.85rem;
-      color: #9ca3af;
-      margin-top: 0.7rem;
-    }
-
-    @media (max-width: 480px) {
-      .app {
-        padding-bottom: 1.5rem;
-      }
-      .row.responsive {
-        flex-direction: column;
-      }
-      #add-set-btn {
-        width: 100%;
-      }
-    }
+    /* --- Empty State --- */
+    .empty-state { text-align: center; padding: 2rem 1rem; color: var(--text-muted); }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header>Workout Log</header>
+
+  <div id="rest-timer-float">
+    <span style="opacity:0.7; font-size:0.85rem;">Rest</span>
+    <span id="timer-display">00:00</span>
+    <div class="stop-timer" id="stop-timer-btn">✕</div>
+  </div>
+
+  <div id="view-tracker" class="view active container">
+    <header class="row sb">
+      <h1>Workout Log</h1>
+      <input type="date" id="date-picker" style="width: auto; padding: 0.5rem;" />
+    </header>
 
     <div class="card">
-      <div class="row stack">
-        <div>
-          <label for="date">Date</label>
-          <input type="date" id="date" />
+      <div class="col">
+        <label>Exercise</label>
+        <input list="exercise-list" id="exercise-input" placeholder="e.g. Bench Press" autocomplete="off" />
+        <datalist id="exercise-list"></datalist>
+      </div>
+      
+      <div class="row" style="margin-top: 0.5rem;">
+        <div class="col">
+          <label>Weight (kg)</label>
+          <input type="number" id="weight-input" placeholder="0" inputmode="decimal" />
         </div>
-
-        <div>
-          <label for="exercise">Exercise</label>
-          <input list="exercise-list" id="exercise" placeholder="e.g. Bench Press" />
-          <datalist id="exercise-list"></datalist>
-        </div>
-
-        <div class="row responsive">
-          <div style="flex:1;">
-            <label for="weight">Weight (kg)</label>
-            <input type="number" id="weight" placeholder="e.g. 40" inputmode="decimal" />
-          </div>
-          <div style="flex:1;">
-            <label for="reps">Reps</label>
-            <input type="number" id="reps" placeholder="e.g. 8" inputmode="numeric" />
-          </div>
-          <div style="align-self:flex-end;">
-            <button id="add-set-btn">Add set</button>
-          </div>
-        </div>
-        <div class="row" style="margin-top: 0.5rem;">
-          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin-bottom: 0;">
-            <input type="checkbox" id="drop-set-checkbox" style="width: auto; margin: 0;" />
-            <span style="font-size: 0.85rem; color: #6b7280;">Drop set</span>
-          </label>
+        <div class="col">
+          <label>Reps</label>
+          <input type="number" id="reps-input" placeholder="0" inputmode="numeric" />
         </div>
       </div>
-      <p class="hint">Data is saved only on this device using your browser storage.</p>
+
+      <div class="row sb" style="margin-top: 1rem;">
+        <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer;">
+          <input type="checkbox" id="dropset-check" style="width:1.2rem; height:1.2rem;">
+          Drop Set
+        </label>
+        <button id="add-btn" class="btn-primary" style="width: auto; padding-left: 2rem; padding-right: 2rem;">Log Set</button>
+      </div>
     </div>
 
-    <div class="card">
-      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:0.3rem;">
-        <div style="font-size:0.9rem;font-weight:600;">Today’s sets</div>
-        <div id="total-sets-pill" class="small-pill" style="display:none;"></div>
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <div style="padding: 1rem; background: #f1f5f9; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">
+        Today's Session
       </div>
-      <div id="log"></div>
-      <div class="empty" id="empty-msg">No sets logged yet. Add your first set above.</div>
-      <button id="clear-day-btn">Clear this day</button>
+      <div id="daily-log" style="padding: 0 1rem;">
+        </div>
+      <div id="empty-msg" class="empty-state">No sets logged today.</div>
+    </div>
+    
+    <button id="clear-day-btn" class="btn-danger" style="margin-top:1rem;">Clear Entire Day</button>
+  </div>
+
+  <div id="view-records" class="view container">
+    <h1>Personal Records</h1>
+    <div class="card">
+      <input type="text" id="search-records" placeholder="Search exercises..." />
+    </div>
+    <div class="card" style="padding: 0;">
+      <div id="records-list"></div>
     </div>
   </div>
 
+  <div id="view-settings" class="view container">
+    <h1>Data & Settings</h1>
+    
+    <div class="card">
+      <h2>Export Data</h2>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">
+        Download all your workout history as a CSV file.
+      </p>
+      <button id="export-btn" class="btn-primary">Download CSV</button>
+    </div>
+
+    <div class="card">
+      <h2>Import Data</h2>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">
+        Import a CSV file. Ensure the format matches the export format (Date, Exercise, Weight, Reps, ...).
+      </p>
+      <input type="file" id="import-file" accept=".csv" style="margin-bottom: 1rem;" />
+      <button id="import-btn" class="btn-primary" style="background: var(--text-main);">Import CSV</button>
+    </div>
+  </div>
+
+  <nav class="nav-bar">
+    <div class="nav-item active" onclick="switchView('tracker', this)">
+      <div class="nav-icon">📝</div>
+      <span>Tracker</span>
+    </div>
+    <div class="nav-item" onclick="switchView('records', this)">
+      <div class="nav-icon">🏆</div>
+      <span>Records</span>
+    </div>
+    <div class="nav-item" onclick="switchView('settings', this)">
+      <div class="nav-icon">⚙️</div>
+      <span>Data</span>
+    </div>
+  </nav>
+
   <script>
+    // --- CONFIG & STATE ---
     const STORAGE_KEY = "simpleWorkoutLog_v1";
     const EXERCISE_KEY = "simpleWorkoutExercises_v1";
+    const DEFAULT_EXERCISES = ["Bench Press", "Squat", "Deadlift", "Overhead Press", "Pull Up", "Dumbbell Curl", "Tricep Extension"];
+    
+    let restInterval;
+    let restStartTime = null;
 
-    const DEFAULT_EXERCISES = [
-      "Bench Press",
-      "Incline DB Press",
-      "Overhead Press",
-      "Lat Pulldown",
-      "Row",
-      "Squat",
-      "Leg Press",
-      "Deadlift",
-      "Bicep Curl",
-      "Tricep Pushdown",
-      "Lateral Raise",
-      "Calf Raise"
-    ];
+    // --- DOM ELEMENTS ---
+    const datePicker = document.getElementById('date-picker');
+    const exerciseInput = document.getElementById('exercise-input');
+    const weightInput = document.getElementById('weight-input');
+    const repsInput = document.getElementById('reps-input');
+    const dropsetCheck = document.getElementById('dropset-check');
+    const logContainer = document.getElementById('daily-log');
+    const emptyMsg = document.getElementById('empty-msg');
+    const exerciseDatalist = document.getElementById('exercise-list');
+    
+    // --- INITIALIZATION ---
+    function init() {
+      datePicker.value = new Date().toISOString().split('T')[0];
+      loadExercises();
+      renderLog();
+      renderRecords(); // Pre-load records
+    }
 
-    const dateInput = document.getElementById("date");
-    const exerciseInput = document.getElementById("exercise");
-    const weightInput = document.getElementById("weight");
-    const repsInput = document.getElementById("reps");
-    const dropSetCheckbox = document.getElementById("drop-set-checkbox");
-    const addSetBtn = document.getElementById("add-set-btn");
-    const clearDayBtn = document.getElementById("clear-day-btn");
-    const logEl = document.getElementById("log");
-    const emptyMsgEl = document.getElementById("empty-msg");
-    const totalSetsPill = document.getElementById("total-sets-pill");
-
-    // ---- Storage helpers ----
-    function loadData() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : {};
-      } catch (e) {
-        console.error("Failed to parse storage", e);
-        return {};
-      }
+    // --- DATA HANDLING ---
+    function getData() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     }
 
     function saveData(data) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     }
 
-    function loadExercises() {
-      try {
-        const raw = localStorage.getItem(EXERCISE_KEY);
-        if (raw) {
-          return JSON.parse(raw);
-        }
-        // If none saved yet, seed with defaults
-        return DEFAULT_EXERCISES.slice();
-      } catch {
-        return DEFAULT_EXERCISES.slice();
-      }
+    function getExercises() {
+      return JSON.parse(localStorage.getItem(EXERCISE_KEY) || JSON.stringify(DEFAULT_EXERCISES));
     }
 
-    function saveExercises(arr) {
-      localStorage.setItem(EXERCISE_KEY, JSON.stringify(arr));
+    function saveExercises(list) {
+      localStorage.setItem(EXERCISE_KEY, JSON.stringify(list));
     }
 
-    function refreshExerciseDropdown() {
-      const list = loadExercises();
-      const datalist = document.getElementById("exercise-list");
-      datalist.innerHTML = "";
-      list
-        .slice()
-        .sort((a, b) => a.localeCompare(b))
-        .forEach((item) => {
-          const opt = document.createElement("option");
-          opt.value = item;
-          datalist.appendChild(opt);
-        });
-    }
-
-    function addExerciseToList(exName) {
-      if (!exName) return;
-      const trimmed = exName.trim();
-      if (!trimmed) return;
-
-      const list = loadExercises();
-      if (!list.includes(trimmed)) {
-        list.push(trimmed);
-        saveExercises(list);
-        refreshExerciseDropdown();
-      }
-    }
-
-    // ---- Date & time helpers ----
-    function todayISO() {
-      const now = new Date();
-      const offsetMs = now.getTimezoneOffset() * 60000;
-      const local = new Date(now.getTime() - offsetMs);
-      return local.toISOString().slice(0, 10);
-    }
-
-    function formatTime(d) {
-      const h = d.getHours().toString().padStart(2, "0");
-      const m = d.getMinutes().toString().padStart(2, "0");
-      return `${h}:${m}`;
-    }
-
-    function getCurrentDateKey() {
-      return dateInput.value || todayISO();
-    }
-
-    // ---- Rendering ----
-    function render() {
-      const data = loadData();
-      const dateKey = getCurrentDateKey();
-      const entries = data[dateKey] || [];
-
-      logEl.innerHTML = "";
-
-      if (!entries.length) {
-        emptyMsgEl.style.display = "block";
-        totalSetsPill.style.display = "none";
-        return;
-      }
-
-      emptyMsgEl.style.display = "none";
-
-      const grouped = {};
-      entries.forEach((entry, idx) => {
-        const key = entry.exercise || "Unknown";
-        if (!grouped[key]) grouped[key] = [];
-        grouped[key].push({ ...entry, idx });
-      });
-
-      const totalSets = entries.length;
-      totalSetsPill.textContent = `${totalSets} set${totalSets === 1 ? "" : "s"}`;
-      totalSetsPill.style.display = "inline-block";
-
-      Object.keys(grouped)
-        .sort((a, b) => a.localeCompare(b))
-        .forEach((exerciseName) => {
-          const block = document.createElement("div");
-          block.className = "exercise-block";
-
-          const header = document.createElement("div");
-          header.className = "exercise-header";
-
-          const nameSpan = document.createElement("span");
-          nameSpan.className = "exercise-name";
-          nameSpan.textContent = exerciseName;
-
-          const countSpan = document.createElement("span");
-          countSpan.className = "small-pill";
-          countSpan.textContent = `${grouped[exerciseName].length} set${
-            grouped[exerciseName].length === 1 ? "" : "s"
-          }`;
-
-          header.appendChild(nameSpan);
-          header.appendChild(countSpan);
-          block.appendChild(header);
-
-          const list = document.createElement("div");
-          list.className = "sets-list";
-
-          grouped[exerciseName].forEach((entry, setIndex) => {
-            const row = document.createElement("div");
-            row.className = entry.isDropSet ? "set-row-display drop-set-row" : "set-row-display";
-
-            const left = document.createElement("div");
-            
-            if (entry.isDropSet) {
-              const dropLabel = document.createElement("span");
-              dropLabel.className = "drop-set-label";
-              dropLabel.textContent = "↓ Drop";
-              left.appendChild(dropLabel);
-            }
-
-            const text = document.createElement("span");
-            text.textContent = `${entry.weight || "-"} kg × ${entry.reps || "-"} reps`;
-            left.appendChild(text);
-
-            const meta = document.createElement("span");
-            meta.className = "set-meta";
-            meta.textContent = entry.time || "";
-
-            if (meta.textContent) {
-              left.appendChild(document.createElement("br"));
-              left.appendChild(meta);
-            }
-
-            const del = document.createElement("button");
-            del.className = "icon-btn";
-            del.textContent = "✕";
-            del.addEventListener("click", () => deleteSet(entry.idx));
-
-            row.appendChild(left);
-            row.appendChild(del);
-            list.appendChild(row);
-          });
-
-          block.appendChild(list);
-          logEl.appendChild(block);
-        });
-    }
-
-    // ---- Actions ----
-    function addSet() {
+    // --- CORE: ADD SET ---
+    document.getElementById('add-btn').addEventListener('click', () => {
+      const date = datePicker.value;
       const exercise = exerciseInput.value.trim();
-      const weight = weightInput.value.trim();
-      const reps = repsInput.value.trim();
-      const isDropSet = dropSetCheckbox.checked;
+      const weight = weightInput.value;
+      const reps = repsInput.value;
+      const isDrop = dropsetCheck.checked;
 
       if (!exercise || !reps) {
-        alert("Please enter at least an exercise and reps.");
+        alert("Please enter exercise and reps");
         return;
       }
 
-      const dateKey = getCurrentDateKey();
-      const data = loadData();
-      if (!data[dateKey]) data[dateKey] = [];
-      const entries = data[dateKey];
-
-      // If it's a drop set, verify there's a previous set of the same exercise
-      if (isDropSet) {
-        const lastSetForExercise = entries
-          .slice()
-          .reverse()
-          .find((e) => e.exercise === exercise && !e.isDropSet);
-        
-        if (!lastSetForExercise) {
-          alert("Drop sets must follow a regular set of the same exercise.");
-          dropSetCheckbox.checked = false;
-          return;
-        }
+      // Save Exercise to list if new
+      const exList = getExercises();
+      if (!exList.includes(exercise)) {
+        exList.push(exercise);
+        exList.sort();
+        saveExercises(exList);
+        loadExercises();
       }
 
-      // Remember this exercise in the dropdown list
-      addExerciseToList(exercise);
+      const data = getData();
+      if (!data[date]) data[date] = [];
 
       const now = new Date();
-      entries.push({
+      const timeString = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+
+      // Add new set
+      data[date].push({
         exercise,
-        weight: weight || null,
-        reps: reps || null,
-        time: formatTime(now),
-        isDropSet: isDropSet || false,
+        weight,
+        reps,
+        isDropSet: isDrop,
+        time: timeString,
+        timestamp: Date.now() // Added for better sorting potential later
       });
 
       saveData(data);
+      
+      // UI Updates
+      renderLog();
+      renderRecords(); // Update PRs immediately
+      
+      // Start Rest Timer
+      startRestTimer();
 
+      // Reset inputs (keep exercise, clear numbers)
       weightInput.value = "";
       repsInput.value = "";
-      dropSetCheckbox.checked = false;
+      dropsetCheck.checked = false;
       repsInput.focus();
-
-      render();
-    }
-
-    function deleteSet(globalIndex) {
-      const data = loadData();
-      const dateKey = getCurrentDateKey();
-      const entries = data[dateKey] || [];
-      if (globalIndex < 0 || globalIndex >= entries.length) return;
-      entries.splice(globalIndex, 1);
-      data[dateKey] = entries;
-      saveData(data);
-      render();
-    }
-
-    function clearDay() {
-      const dateKey = getCurrentDateKey();
-      if (!confirm(`Clear all sets for ${dateKey}?`)) return;
-      const data = loadData();
-      delete data[dateKey];
-      saveData(data);
-      render();
-    }
-
-    // ---- Event listeners ----
-    addSetBtn.addEventListener("click", addSet);
-    clearDayBtn.addEventListener("click", clearDay);
-    dateInput.addEventListener("change", render);
-
-    repsInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") addSet();
-    });
-    weightInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") repsInput.focus();
-    });
-    exerciseInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") weightInput.focus();
     });
 
-    // ---- Init ----
-    function init() {
-      dateInput.value = todayISO();
-      refreshExerciseDropdown();
-      render();
+    // --- RENDER: DAILY LOG ---
+    // Request: Sort by order logged (Time), not by String
+    function renderLog() {
+      const date = datePicker.value;
+      const data = getData();
+      const sets = data[date] || [];
+      
+      logContainer.innerHTML = '';
+      
+      if (sets.length === 0) {
+        emptyMsg.style.display = 'block';
+        document.getElementById('clear-day-btn').style.display = 'none';
+      } else {
+        emptyMsg.style.display = 'none';
+        document.getElementById('clear-day-btn').style.display = 'block';
+        
+        // Render chronologically (as stored in array)
+        sets.forEach((set, index) => {
+          const item = document.createElement('div');
+          item.className = 'log-item';
+          
+          let badges = `<span class="pill pill-time">${set.time || '--:--'}</span>`;
+          if(set.isDropSet) badges += ` <span class="pill pill-drop">Drop</span>`;
+
+          item.innerHTML = `
+            <div class="log-info">
+              <h4>${set.exercise}</h4>
+              <div class="log-details">
+                <span style="font-weight:600; color:var(--text-main);">${set.weight} kg</span> × <span>${set.reps} reps</span>
+                ${badges}
+              </div>
+            </div>
+            <button class="btn-ghost" onclick="deleteSet('${date}', ${index})">✕</button>
+          `;
+          logContainer.appendChild(item);
+        });
+      }
+    }
+
+    window.deleteSet = function(date, index) {
+      const data = getData();
+      if (data[date]) {
+        data[date].splice(index, 1);
+        if(data[date].length === 0) delete data[date];
+        saveData(data);
+        renderLog();
+        renderRecords();
+      }
+    };
+
+    document.getElementById('clear-day-btn').addEventListener('click', () => {
+      if(confirm("Clear all data for this date?")) {
+        const data = getData();
+        delete data[datePicker.value];
+        saveData(data);
+        renderLog();
+        renderRecords();
+      }
+    });
+
+    datePicker.addEventListener('change', renderLog);
+
+    // --- EXERCISE DROPDOWN ---
+    function loadExercises() {
+      const list = getExercises();
+      exerciseDatalist.innerHTML = '';
+      list.forEach(ex => {
+        const opt = document.createElement('option');
+        opt.value = ex;
+        exerciseDatalist.appendChild(opt);
+      });
+    }
+
+    // --- RECORDS PAGE ---
+    function renderRecords() {
+      const query = document.getElementById('search-records').value.toLowerCase();
+      const data = getData();
+      const stats = {}; // { ExerciseName: { maxWeight: 0, repsAtMax: 0 } }
+
+      // aggregation
+      Object.keys(data).forEach(dateKey => {
+        data[dateKey].forEach(set => {
+          const exName = set.exercise;
+          const weight = parseFloat(set.weight) || 0;
+          const reps = parseInt(set.reps) || 0;
+
+          if (!stats[exName]) {
+            stats[exName] = { maxWeight: 0, reps: 0 };
+          }
+
+          if (weight > stats[exName].maxWeight) {
+            stats[exName] = { maxWeight: weight, reps: reps };
+          } else if (weight === stats[exName].maxWeight && reps > stats[exName].reps) {
+            // Tie-breaker: if weight is same, higher reps wins
+            stats[exName].reps = reps;
+          }
+        });
+      });
+
+      const listContainer = document.getElementById('records-list');
+      listContainer.innerHTML = '';
+
+      const sortedNames = Object.keys(stats).sort();
+      let hasResults = false;
+
+      sortedNames.forEach(name => {
+        if (name.toLowerCase().includes(query)) {
+          hasResults = true;
+          const rec = stats[name];
+          const el = document.createElement('div');
+          el.className = 'record-item';
+          el.innerHTML = `
+            <div style="font-weight:600;">${name}</div>
+            <div class="record-val">
+              <div class="big-num">${rec.maxWeight} <span style="font-size:0.8rem;">kg</span></div>
+              <div class="sub-text">for ${rec.reps} reps</div>
+            </div>
+          `;
+          listContainer.appendChild(el);
+        }
+      });
+
+      if (!hasResults) {
+        listContainer.innerHTML = '<div class="empty-state">No records found.</div>';
+      }
+    }
+
+    document.getElementById('search-records').addEventListener('input', renderRecords);
+
+    // --- REST TIMER ---
+    function startRestTimer() {
+      restStartTime = Date.now();
+      const timerEl = document.getElementById('rest-timer-float');
+      const display = document.getElementById('timer-display');
+      
+      timerEl.classList.add('active');
+      
+      if(restInterval) clearInterval(restInterval);
+      
+      restInterval = setInterval(() => {
+        const diff = Math.floor((Date.now() - restStartTime) / 1000);
+        const m = Math.floor(diff / 60).toString().padStart(2,'0');
+        const s = (diff % 60).toString().padStart(2,'0');
+        display.textContent = `${m}:${s}`;
+      }, 1000);
+    }
+
+    document.getElementById('stop-timer-btn').addEventListener('click', () => {
+      clearInterval(restInterval);
+      document.getElementById('rest-timer-float').classList.remove('active');
+    });
+
+    // --- IMPORT / EXPORT ---
+    document.getElementById('export-btn').addEventListener('click', () => {
+      const data = getData();
+      let csv = "Date,Exercise,Weight,Reps,Time,IsDropSet\n";
+      
+      // Sort dates for export cleanliness
+      const dates = Object.keys(data).sort();
+      dates.forEach(d => {
+        data[d].forEach(set => {
+          // escape commas in exercise names
+          const safeEx = set.exercise.includes(',') ? `"${set.exercise}"` : set.exercise;
+          csv += `${d},${safeEx},${set.weight},${set.reps},${set.time},${set.isDropSet}\n`;
+        });
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `workout_data_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    });
+
+    document.getElementById('import-btn').addEventListener('click', () => {
+      const fileInput = document.getElementById('import-file');
+      const file = fileInput.files[0];
+      if (!file) return alert("Please select a CSV file.");
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const text = e.target.result;
+          const lines = text.split('\n');
+          const data = getData(); // Load current to merge, or {} to overwrite
+          let count = 0;
+
+          // Skip header (index 0)
+          for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+            
+            // Basic CSV parse (assumes simple structure from export)
+            const parts = line.split(','); 
+            // Handle potential quoted exercise names roughly
+            // For robust usage, a real CSV parser library is better, but this works for our Export format
+            if(parts.length < 4) continue;
+
+            const date = parts[0];
+            const exercise = parts[1].replace(/"/g, '');
+            const weight = parts[2];
+            const reps = parts[3];
+            const time = parts[4] || "00:00";
+            const isDropSet = parts[5] === 'true';
+
+            if (!data[date]) data[date] = [];
+            data[date].push({ exercise, weight, reps, time, isDropSet });
+            count++;
+          }
+
+          saveData(data);
+          alert(`Successfully imported ${count} sets.`);
+          init(); // reload UI
+        } catch (err) {
+          console.error(err);
+          alert("Error parsing CSV. Ensure format is correct.");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // --- NAVIGATION ---
+    window.switchView = function(viewName, navEl) {
+      document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+      document.getElementById(`view-${viewName}`).classList.add('active');
+      
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      navEl.classList.add('active');
+
+      if (viewName === 'records') renderRecords();
     }
 
     init();
