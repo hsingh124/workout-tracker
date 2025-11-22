@@ -379,15 +379,16 @@
       localStorage.setItem(THEME_KEY, themeName);
       themeToggle.textContent = themeName === 'dark' ? '☀️' : '🌙';
       
-      // Update the iPhone Status Bar Color
-      const color = themeName === 'dark' ? '#111827' : '#f8fafc'; // Matches your CSS --bg variable
-      document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
-    }
+      // 1. Update the Background Color (theme-color)
+      const bgColor = themeName === 'dark' ? '#111827' : '#f8fafc';
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', bgColor);
 
-    themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      setTheme(current === 'dark' ? 'light' : 'dark');
-    });
+      // 2. Update the Status Text Color (apple-mobile-web-app-status-bar-style)
+      // 'black' uses white text (for dark backgrounds)
+      // 'default' uses black text (for light backgrounds)
+      const statusStyle = themeName === 'dark' ? 'black' : 'default';
+      document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').setAttribute('content', statusStyle);
+    }
 
     // --- DATA HANDLING ---
     function getData() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
