@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
   <meta charset="UTF-8" />
   <title>Modern Workout Log</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="theme-color" content="#f8fafc" />
   <style>
     :root {
@@ -44,8 +45,12 @@
       --scheme: dark;
     }
 
-    * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-    
+    * {
+      box-sizing: border-box;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
       margin: 0;
       background: var(--bg);
@@ -63,11 +68,26 @@
     }
 
     /* --- Typography & Header --- */
-    header { margin-bottom: 1.5rem; }
-    
-    h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -0.025em; }
-    h1 { font-size: 1.75rem; }
-    h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+    header {
+      margin-bottom: 1.5rem;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
 
     /* --- Cards --- */
     .card {
@@ -80,9 +100,22 @@
       transition: background 0.3s ease, border-color 0.3s ease;
     }
 
-    .row { display: flex; align-items: center; gap: 0.75rem; }
-    .col { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
-    .sb { justify-content: space-between; }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+    }
+
+    .sb {
+      justify-content: space-between;
+    }
 
     /* --- Forms --- */
     label {
@@ -91,7 +124,8 @@
       color: var(--text-muted);
     }
 
-    input, select {
+    input,
+    select {
       width: 100%;
       padding: 0.85rem;
       border-radius: 12px;
@@ -102,6 +136,7 @@
       transition: all 0.2s;
       color-scheme: var(--scheme);
     }
+
     input:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px var(--primary-soft);
@@ -120,12 +155,30 @@
       align-items: center;
       justify-content: center;
     }
-    button:active { transform: scale(0.98); }
 
-    .btn-primary { background: var(--primary); color: white; width: 100%; }
-    .btn-ghost { background: transparent; color: var(--text-muted); padding: 0.5rem; }
-    .btn-danger { background: var(--danger-bg); color: var(--danger); width: 100%; border: 1px solid var(--danger); }
-    
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 0.5rem;
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      color: var(--danger);
+      width: 100%;
+      border: 1px solid var(--danger);
+    }
+
     .btn-icon {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -143,24 +196,71 @@
       padding: 0.85rem 0;
       border-bottom: 1px solid var(--border);
     }
-    .log-item:last-child { border-bottom: none; }
-    
-    .log-info h4 { margin: 0 0 0.2rem 0; font-size: 1rem; color: var(--text-main); }
-    .log-details { font-size: 0.9rem; color: var(--text-muted); display: flex; gap: 8px; align-items: center; }
-    
-    .pill { font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
-    .pill-drop { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-    .pill-time { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    .log-info h4 {
+      margin: 0 0 0.2rem 0;
+      font-size: 1rem;
+      color: var(--text-main);
+    }
+
+    .log-details {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    .pill-drop {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+    }
+
+    .pill-time {
+      background: var(--bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
 
     /* --- Tabs --- */
-    .view { display: none; animation: fadein 0.2s; }
-    .view.active { display: block; }
-    @keyframes fadein { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .view {
+      display: none;
+      animation: fadein 0.2s;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes fadein {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     /* --- Navigation --- */
     .nav-bar {
       position: fixed;
-      bottom: 0; left: 0; right: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
       background: var(--nav-bg);
       backdrop-filter: blur(10px);
       border-top: 1px solid var(--border);
@@ -170,44 +270,98 @@
       z-index: 100;
       transition: background 0.3s ease;
     }
+
     .nav-item {
-      flex: 1; text-align: center; padding: 0.5rem;
+      flex: 1;
+      text-align: center;
+      padding: 0.5rem;
       color: var(--text-muted);
-      font-size: 0.75rem; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
     }
-    .nav-item.active { color: var(--primary); font-weight: 600; }
-    .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
+
+    .nav-item.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      font-size: 1.4rem;
+      margin-bottom: 2px;
+    }
 
     /* --- Rest Timer --- */
     #rest-timer-float {
-      position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
-      background: var(--text-main); color: var(--card-bg);
-      padding: 0.6rem 1.2rem; border-radius: 99px;
-      font-variant-numeric: tabular-nums; font-weight: 600;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-      display: none; z-index: 99; align-items: center; gap: 8px;
+      position: fixed;
+      bottom: 110px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text-main);
+      color: var(--card-bg);
+      padding: 0.6rem 1.2rem;
+      border-radius: 99px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 99;
+      align-items: center;
+      gap: 8px;
     }
-    #rest-timer-float.active { display: flex; }
+
+    #rest-timer-float.active {
+      display: flex;
+    }
+
     .stop-timer {
-        background: rgba(128,128,128,0.3); border-radius: 50%;
-        width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;
-        font-size: 12px; cursor: pointer;
+      background: rgba(128, 128, 128, 0.3);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
     }
 
     /* --- Records Page --- */
     .record-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 1rem; border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
     }
+
     .record-item:last-child {
       border-bottom: none;
     }
-    .record-val { text-align: right; }
-    .big-num { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-    .sub-text { font-size: 0.8rem; color: var(--text-muted); }
 
-    .empty-state { text-align: center; padding: 2rem 1rem; color: var(--text-muted); }
+    .record-val {
+      text-align: right;
+    }
+
+    .big-num {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .sub-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+    }
 
     /* --- Checkboxes --- */
     input[type="checkbox"] {
@@ -217,19 +371,20 @@
 
     /* Fix for iOS Date Picker width */
     #date-picker {
-      width: 100%;              /* Fill the available space */
+      width: 100%;
+      /* Fill the available space */
       display: block;
       margin: 0;
-      
+
       /* CRITICAL: This forces iOS to render it as a flat box 
          (matching your other inputs) instead of the default bubble */
       appearance: none;
       -webkit-appearance: none;
-      
+
       /* Safety against overflow */
       box-sizing: border-box;
       max-width: 100%;
-      
+
       /* Theme consistency */
       background: var(--input-bg);
       color: var(--text-main);
@@ -237,6 +392,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <div id="rest-timer-float">
@@ -260,7 +416,7 @@
         <input list="exercise-list" id="exercise-input" placeholder="e.g. Bench Press" autocomplete="off" />
         <datalist id="exercise-list"></datalist>
       </div>
-      
+
       <div class="row" style="margin-top: 0.5rem;">
         <div class="col">
           <label>Weight (kg)</label>
@@ -277,19 +433,21 @@
           <input type="checkbox" id="dropset-check" style="width:1.2rem; height:1.2rem;">
           Drop Set
         </label>
-        <button id="add-btn" class="btn-primary" style="width: auto; padding-left: 2rem; padding-right: 2rem;">Log Set</button>
+        <button id="add-btn" class="btn-primary" style="width: auto; padding-left: 2rem; padding-right: 2rem;">Log
+          Set</button>
       </div>
     </div>
 
     <div class="card" style="padding: 0; overflow: hidden;">
-      <div style="padding: 1rem; background: var(--bg); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">
+      <div
+        style="padding: 1rem; background: var(--bg); border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.9rem; color: var(--text-muted);">
         Today's Session
       </div>
       <div id="daily-log" style="padding: 0 1rem;">
-        </div>
+      </div>
       <div id="empty-msg" class="empty-state">No sets logged today.</div>
     </div>
-    
+
     <button id="clear-day-btn" class="btn-danger" style="margin-top:1rem;">Clear Entire Day</button>
   </div>
 
@@ -305,7 +463,7 @@
 
   <div id="view-settings" class="view container">
     <h1>Data & Settings</h1>
-    
+
     <div class="card" style="margin-top: 1.5rem;">
       <h2>Export Data</h2>
       <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">
@@ -320,7 +478,8 @@
         Import a CSV file. Ensure the format matches the export format.
       </p>
       <input type="file" id="import-file" accept=".csv" style="margin-bottom: 1rem;" />
-      <button id="import-btn" class="btn-primary" style="background: var(--text-main); color: var(--card-bg);">Import CSV</button>
+      <button id="import-btn" class="btn-primary" style="background: var(--text-main); color: var(--card-bg);">Import
+        CSV</button>
     </div>
   </div>
 
@@ -344,7 +503,7 @@
     const STORAGE_KEY = "simpleWorkoutLog_v1";
     const EXERCISE_KEY = "simpleWorkoutExercises_v1";
     const THEME_KEY = "simpleWorkoutTheme";
-    
+
     let restInterval;
     let restStartTime = null;
     const DEFAULT_EXERCISES = ["Bench Press", "Squat", "Deadlift", "Overhead Press", "Pull Up", "Dumbbell Curl", "Tricep Extension"];
@@ -378,7 +537,7 @@
       document.documentElement.setAttribute('data-theme', themeName);
       localStorage.setItem(THEME_KEY, themeName);
       themeToggle.textContent = themeName === 'dark' ? '☀️' : '🌙';
-      
+
       // 1. Update the Background Color (theme-color)
       const bgColor = themeName === 'dark' ? '#111827' : '#f8fafc';
       document.querySelector('meta[name="theme-color"]').setAttribute('content', bgColor);
@@ -424,7 +583,7 @@
       if (!data[date]) data[date] = [];
 
       const now = new Date();
-      const timeString = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
+      const timeString = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
 
       data[date].push({
         exercise, weight, reps, isDropSet: isDrop, time: timeString, timestamp: Date.now()
@@ -446,22 +605,22 @@
       const date = datePicker.value;
       const data = getData();
       const sets = data[date] || [];
-      
+
       logContainer.innerHTML = '';
-      
+
       if (sets.length === 0) {
         emptyMsg.style.display = 'block';
         document.getElementById('clear-day-btn').style.display = 'none';
       } else {
         emptyMsg.style.display = 'none';
         document.getElementById('clear-day-btn').style.display = 'block';
-        
+
         sets.forEach((set, index) => {
           const item = document.createElement('div');
           item.className = 'log-item';
-          
+
           let badges = `<span class="pill pill-time">${set.time || '--:--'}</span>`;
-          if(set.isDropSet) badges += ` <span class="pill pill-drop">Drop</span>`;
+          if (set.isDropSet) badges += ` <span class="pill pill-drop">Drop</span>`;
 
           item.innerHTML = `
             <div class="log-info">
@@ -478,11 +637,11 @@
       }
     }
 
-    window.deleteSet = function(date, index) {
+    window.deleteSet = function (date, index) {
       const data = getData();
       if (data[date]) {
         data[date].splice(index, 1);
-        if(data[date].length === 0) delete data[date];
+        if (data[date].length === 0) delete data[date];
         saveData(data);
         renderLog();
         renderRecords();
@@ -490,7 +649,7 @@
     };
 
     document.getElementById('clear-day-btn').addEventListener('click', () => {
-      if(confirm("Clear all data for this date?")) {
+      if (confirm("Clear all data for this date?")) {
         const data = getData();
         delete data[datePicker.value];
         saveData(data);
@@ -516,7 +675,7 @@
     function renderRecords() {
       const query = document.getElementById('search-records').value.toLowerCase();
       const data = getData();
-      const stats = {}; 
+      const stats = {};
 
       Object.keys(data).forEach(dateKey => {
         data[dateKey].forEach(set => {
@@ -564,11 +723,11 @@
       const timerEl = document.getElementById('rest-timer-float');
       const display = document.getElementById('timer-display');
       timerEl.classList.add('active');
-      if(restInterval) clearInterval(restInterval);
+      if (restInterval) clearInterval(restInterval);
       restInterval = setInterval(() => {
         const diff = Math.floor((Date.now() - restStartTime) / 1000);
-        const m = Math.floor(diff / 60).toString().padStart(2,'0');
-        const s = (diff % 60).toString().padStart(2,'0');
+        const m = Math.floor(diff / 60).toString().padStart(2, '0');
+        const s = (diff % 60).toString().padStart(2, '0');
         display.textContent = `${m}:${s}`;
       }, 1000);
     }
@@ -590,7 +749,7 @@
       const blob = new Blob([csv], { type: 'text/csv' });
       const a = document.createElement('a');
       a.href = window.URL.createObjectURL(blob);
-      a.download = `workout_data_${new Date().toISOString().slice(0,10)}.csv`;
+      a.download = `workout_data_${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
     });
 
@@ -607,11 +766,11 @@
             const line = lines[i].trim();
             if (!line) continue;
             const parts = line.split(',');
-            if(parts.length < 4) continue;
+            if (parts.length < 4) continue;
             const date = parts[0];
             const exercise = parts[1].replace(/"/g, '');
             if (!data[date]) data[date] = [];
-            data[date].push({ exercise, weight: parts[2], reps: parts[3], time: parts[4]||"00:00", isDropSet: parts[5]==='true' });
+            data[date].push({ exercise, weight: parts[2], reps: parts[3], time: parts[4] || "00:00", isDropSet: parts[5] === 'true' });
             count++;
           }
           saveData(data);
@@ -623,7 +782,7 @@
     });
 
     // --- NAVIGATION ---
-    window.switchView = function(viewName, navEl) {
+    window.switchView = function (viewName, navEl) {
       document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
       document.getElementById(`view-${viewName}`).classList.add('active');
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -634,4 +793,5 @@
     init();
   </script>
 </body>
+
 </html>
