@@ -32,16 +32,16 @@
       /* Dark Theme */
       --primary: #3b82f6;
       --primary-soft: #1e3a8a;
-      --bg: #111827;
-      --card-bg: #1f2937;
+      --bg: #000000;
+      --card-bg: #121212;
       --text-main: #f9fafb;
       --text-muted: #9ca3af;
-      --border: #374151;
-      --input-bg: #374151;
+      --border: #333333;
+      --input-bg: #1c1c1c;
       --danger: #f87171;
       --danger-bg: #450a0a;
-      --nav-bg: rgba(31, 41, 55, 0.95);
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+      --nav-bg: rgba(0, 0, 0, 0.95);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
       --scheme: dark;
     }
 
@@ -539,7 +539,7 @@
       themeToggle.textContent = themeName === 'dark' ? '☀️' : '🌙';
 
       // 1. Update the Background Color (theme-color)
-      const bgColor = themeName === 'dark' ? '#111827' : '#f8fafc';
+      const bgColor = themeName === 'dark' ? '#000000' : '#f8fafc';
       document.querySelector('meta[name="theme-color"]').setAttribute('content', bgColor);
 
       // 2. Update the Status Text Color (apple-mobile-web-app-status-bar-style)
