@@ -598,6 +598,72 @@
       line-height: 1;
     }
 
+    /* ── Today Log ───────────────────────────────── */
+    .today-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #today-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .today-header {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--dim);
+      padding: 0 2px;
+    }
+
+    .today-item {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .today-ex {
+      font-size: 14px;
+      font-weight: 500;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .today-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .today-weight {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .today-reps {
+      font-size: 13px;
+      color: var(--mid);
+    }
+
+    .today-time {
+      font-size: 11px;
+      color: var(--dim);
+      min-width: 34px;
+      text-align: right;
+    }
+
     /* ── History items gap ───────────────────────── */
     #hist-items {
       display: flex;
@@ -651,6 +717,11 @@
         <button class="btn-log" id="btn-log">Log Record</button>
 
         <div id="feedback" style="display:none"></div>
+
+        <div class="today-wrap" id="today-wrap" style="display:none">
+          <div class="today-header">Today</div>
+          <div id="today-items"></div>
+        </div>
 
       </div>
 
@@ -978,6 +1049,7 @@
       addEntry(exercise, weight, r);
       renderPRCard(exercise);
       if (progEx === exercise) renderGraph(progEx);
+      renderTodayLog();
 
       const wStr = weight > 0 ? `${fmtW(weight)} kg × ` : '';
       const rStr = `${r} rep${r !== 1 ? 's' : ''}`;
@@ -1187,6 +1259,36 @@
     }
 
     // ════════════════════════════════════════════
+    // Today Log
+    // ════════════════════════════════════════════
+    function renderTodayLog() {
+      const today = new Date().toISOString().slice(0, 10);
+      const entries = (workoutData[today] || []).slice().reverse(); // newest first
+      const wrap  = document.getElementById('today-wrap');
+      const items = document.getElementById('today-items');
+
+      if (!entries.length) {
+        wrap.style.display = 'none';
+        return;
+      }
+
+      wrap.style.display = 'flex';
+      items.innerHTML = entries.map(e => {
+        const w = parseFloat(e.weight) || 0;
+        const r = parseInt(e.reps) || 0;
+        const wStr = w > 0 ? `${fmtW(w)} <span class="today-reps">kg × ${r}</span>` : `${r} reps`;
+        return `
+          <div class="today-item">
+            <span class="today-ex">${e.exercise}</span>
+            <div class="today-right">
+              <span class="today-weight">${wStr}</span>
+              <span class="today-time">${e.time || ''}</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ════════════════════════════════════════════
     // Rest Timer
     // ════════════════════════════════════════════
     let restInterval = null;
@@ -1334,6 +1436,8 @@
 
       setupDD('log-ex',  'log-dd',  val => { logEx  = val; renderPRCard(val); });
       setupDD('prog-ex', 'prog-dd', val => { progEx = val; renderGraph(val);  });
+
+      renderTodayLog();
     }
 
     init();
