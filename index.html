@@ -547,6 +547,64 @@
       display: block;
     }
 
+    /* ── Rest Timer ──────────────────────────────── */
+    #rest-timer-float {
+      position: fixed;
+      bottom: calc(70px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--text);
+      color: #1C1B19;
+      padding: 10px 18px;
+      border-radius: 99px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: 17px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+      display: none;
+      z-index: 300;
+      align-items: center;
+      gap: 12px;
+      white-space: nowrap;
+      letter-spacing: -0.5px;
+    }
+
+    #rest-timer-float.active { display: flex; }
+
+    .rest-timer-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: rgba(28,27,25,0.5);
+      margin-right: -4px;
+    }
+
+    .rest-timer-stop {
+      background: rgba(28,27,25,0.12);
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      color: #1C1B19;
+      flex-shrink: 0;
+      padding: 0;
+      font-family: inherit;
+      line-height: 1;
+    }
+
+    /* ── History items gap ───────────────────────── */
+    #hist-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar { width: 0; background: transparent; }
   </style>
@@ -682,6 +740,13 @@
       </button>
     </nav>
 
+  </div>
+
+  <!-- Rest Timer -->
+  <div id="rest-timer-float">
+    <span class="rest-timer-label">Rest</span>
+    <span id="rest-time">0:00</span>
+    <button class="rest-timer-stop" id="rest-stop-btn">✕</button>
   </div>
 
   <!-- Tooltip -->
@@ -912,6 +977,7 @@
 
       addEntry(exercise, weight, r);
       renderPRCard(exercise);
+      if (progEx === exercise) renderGraph(progEx);
 
       const wStr = weight > 0 ? `${fmtW(weight)} kg × ` : '';
       const rStr = `${r} rep${r !== 1 ? 's' : ''}`;
@@ -920,6 +986,8 @@
         isNewPR ? `New PR — ${wStr}${rStr}` : `Logged ${wStr}${rStr}`,
         'ok'
       );
+
+      startRestTimer();
 
       document.getElementById('inp-w').value = '';
       document.getElementById('inp-r').value = '';
@@ -1117,6 +1185,36 @@
       const step = (n - 1) / (count - 1);
       return Array.from({ length: count }, (_, i) => Math.round(i * step));
     }
+
+    // ════════════════════════════════════════════
+    // Rest Timer
+    // ════════════════════════════════════════════
+    let restInterval = null;
+    let restSeconds  = 0;
+
+    function startRestTimer() {
+      restSeconds = 0;
+      clearInterval(restInterval);
+      updateRestDisplay();
+      document.getElementById('rest-timer-float').classList.add('active');
+      restInterval = setInterval(() => {
+        restSeconds++;
+        updateRestDisplay();
+      }, 1000);
+    }
+
+    function updateRestDisplay() {
+      const m = Math.floor(restSeconds / 60);
+      const s = restSeconds % 60;
+      document.getElementById('rest-time').textContent =
+        `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    document.getElementById('rest-stop-btn').addEventListener('click', () => {
+      clearInterval(restInterval);
+      restInterval = null;
+      document.getElementById('rest-timer-float').classList.remove('active');
+    });
 
     // ════════════════════════════════════════════
     // CSV Export
