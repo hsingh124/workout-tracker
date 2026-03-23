@@ -1235,10 +1235,10 @@
 
       // History list (newest first, annotate running PRs)
       histWrap.style.display = 'flex';
-      let runMax = -Infinity;
+      let runMaxW = -Infinity, runMaxR = -Infinity;
       const annotated = h.map(p => {
-        const isPR = p.weight > runMax;
-        if (isPR) runMax = p.weight;
+        const isPR = p.weight > runMaxW || (p.weight === runMaxW && p.reps > runMaxR);
+        if (isPR) { runMaxW = p.weight; runMaxR = p.reps; }
         return { ...p, isPR };
       }).reverse();
 
@@ -1292,22 +1292,27 @@
     // Rest Timer
     // ════════════════════════════════════════════
     let restInterval = null;
-    let restSeconds  = 0;
+    let restStartTime = null;
 
     function startRestTimer() {
-      restSeconds = 0;
+      restStartTime = Date.now();
       clearInterval(restInterval);
       updateRestDisplay();
       document.getElementById('rest-timer-float').classList.add('active');
-      restInterval = setInterval(() => {
-        restSeconds++;
-        updateRestDisplay();
-      }, 1000);
+      restInterval = setInterval(updateRestDisplay, 1000);
+      document.addEventListener('visibilitychange', onRestVisibility);
+    }
+
+    function onRestVisibility() {
+      if (!restStartTime) return;
+      if (document.visibilityState === 'visible') updateRestDisplay();
     }
 
     function updateRestDisplay() {
-      const m = Math.floor(restSeconds / 60);
-      const s = restSeconds % 60;
+      if (!restStartTime) return;
+      const elapsed = Math.floor((Date.now() - restStartTime) / 1000);
+      const m = Math.floor(elapsed / 60);
+      const s = elapsed % 60;
       document.getElementById('rest-time').textContent =
         `${m}:${s.toString().padStart(2, '0')}`;
     }
@@ -1315,6 +1320,8 @@
     document.getElementById('rest-stop-btn').addEventListener('click', () => {
       clearInterval(restInterval);
       restInterval = null;
+      restStartTime = null;
+      document.removeEventListener('visibilitychange', onRestVisibility);
       document.getElementById('rest-timer-float').classList.remove('active');
     });
 
